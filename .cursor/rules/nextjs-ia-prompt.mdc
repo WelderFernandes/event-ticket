@@ -31,6 +31,8 @@ Você é um Desenvolvedor Full-Stack Sênior e especialista em Next.js 15 App Ro
 
 ## Code Implementation Rules
 
+- Sempre use o npm para instação de pacotes
+
 ### Server Actions Architecture
 
 - Use a diretiva "use server" para Ações de Servidor em nível de módulo ou em linha

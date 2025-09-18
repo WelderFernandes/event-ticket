@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  # Banco de dados PostgreSQL para desenvolvimento
+  postgres:
+    image: postgres:15-alpine
+    container_name: event-ticket-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: event_ticket_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - event-ticket-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicação Next.js para desenvolvimento
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: event-ticket-app-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/event_ticket_dev
+      - PORT=3000
+    ports:
+      - "3001:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - event-ticket-dev-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: pnpm dev
+
+  # Redis para desenvolvimento
+  redis:
+    image: redis:7-alpine
+    container_name: event-ticket-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - event-ticket-dev-network
+    command: redis-server --appendonly yes
+
+  # Prisma Studio para gerenciar o banco
+  prisma-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: event-ticket-prisma-studio
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/event_ticket_dev
+    ports:
+      - "5555:5555"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - event-ticket-dev-network
+    volumes:
+      - .:/app
+    command: npx prisma studio --hostname 0.0.0.0
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+networks:
+  event-ticket-dev-network:
+    driver: bridge

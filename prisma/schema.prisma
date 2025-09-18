@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  maxTickets  Int?
+  price       Decimal?
+  isActive    Boolean  @default(true)
+  organizerId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  participants Participant[]
+  tickets      Ticket[]
+
+  @@map("events")
+}
+
+model Participant {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  eventId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tickets Ticket[]
+
+  @@unique([email, eventId])
+  @@map("participants")
+}
+
+model Ticket {
+  id            String       @id @default(cuid())
+  ticketNumber  String       @unique
+  qrCode        String       @unique
+  status        TicketStatus @default(ACTIVE)
+  usedAt        DateTime?
+  participantId String
+  eventId       String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relacionamentos
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  event       Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("tickets")
+}
+
+enum TicketStatus {
+  ACTIVE
+  USED
+  CANCELLED
+}
