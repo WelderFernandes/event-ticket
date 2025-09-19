@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useHybridAuth } from "@/hooks/use-hybrid-auth";
 import Link from "next/link";
 import {
   Card,
@@ -21,6 +26,30 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const { isAuthenticated, isLoading } = useHybridAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return null; // Será redirecionado pelo useEffect
+  }
+
   return (
     <div className="space-y-8">
       {/* Hero Section */}
@@ -34,15 +63,15 @@ export default function Home() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
           <Button asChild size="lg">
-            <Link href="/dashboard/tickets">
+            <Link href="/auth/login">
               <Ticket className="mr-2 h-5 w-5" />
-              Gerar Tickets
+              Fazer Login
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="/validation">
+            <Link href="/auth/register">
               <QrCode className="mr-2 h-5 w-5" />
-              Validar Tickets
+              Criar Conta
             </Link>
           </Button>
         </div>
@@ -150,13 +179,13 @@ export default function Home() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Button asChild variant="outline" className="justify-start">
-                <Link href="/dashboard/events">
+                <Link href="/auth/login">
                   <Calendar className="mr-2 h-4 w-4" />
                   Gerenciar Eventos
                 </Link>
               </Button>
               <Button asChild variant="outline" className="justify-start">
-                <Link href="/dashboard/tickets">
+                <Link href="/auth/login">
                   <Ticket className="mr-2 h-4 w-4" />
                   Gerar Tickets
                 </Link>
@@ -168,7 +197,7 @@ export default function Home() {
                 </Link>
               </Button>
               <Button asChild variant="outline" className="justify-start">
-                <Link href="/dashboard/reports">
+                <Link href="/auth/login">
                   <BarChart3 className="mr-2 h-4 w-4" />
                   Relatórios
                 </Link>

@@ -5,14 +5,17 @@ import {
   AudioWaveform,
   BookOpen,
   Bot,
+  Calendar1,
   Command,
   Frame,
   GalleryVerticalEnd,
   LucideIcon,
   Map,
   PieChart,
+  RssIcon,
   Settings2,
   SquareTerminal,
+  Ticket,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -91,7 +94,13 @@ const menuItems: MenuItems = {
     {
       title: "Eventos",
       url: "/dashboard/events",
-      icon: SquareTerminal,
+      icon: Calendar1,
+      isActive: true,
+    },
+    {
+      title: "Tickets",
+      url: "/dashboard/tickets",
+      icon: Ticket,
       isActive: true,
     },
     {
