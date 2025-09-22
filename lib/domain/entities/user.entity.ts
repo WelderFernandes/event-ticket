@@ -6,7 +6,7 @@ export enum UserRole {
 
 export interface User {
   id: string;
-  name: string;
+  nome: string;
   email: string;
   emailVerified: boolean;
   image?: string;
@@ -16,14 +16,14 @@ export interface User {
 }
 
 export interface CreateUserData {
-  name: string;
+  nome: string;
   email: string;
   password: string;
   role?: UserRole;
 }
 
 export interface UpdateUserData {
-  name?: string;
+  nome?: string;
   email?: string;
   role?: UserRole;
 }

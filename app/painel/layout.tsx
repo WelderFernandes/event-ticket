@@ -14,7 +14,7 @@ export default function RootLayout({
         <AppSidebar />
         <SidebarInset>
           <Header />
-          <div className="p-6 mx-auto">{children}</div>
+          <div className="p-6">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </ProtectedRoute>
