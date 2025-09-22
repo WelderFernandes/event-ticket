@@ -9,6 +9,9 @@ export interface GetUsersParams {
   perPage?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  role?: string[];
+  status?: string[];
+  emailVerified?: boolean;
 }
 
 export interface GetUsersResponse {
@@ -16,8 +19,11 @@ export interface GetUsersResponse {
     id: string;
     nome: string;
     email: string;
-    emailVerified: boolean;
+    cpf: string;
+    matricula: number;
     role: UserRole;
+    status: string;
+    emailVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
   }>;
@@ -33,29 +39,58 @@ export async function getUsers({
   perPage = 10,
   sortBy = "nome",
   sortOrder = "asc",
+  role = [],
+  status = [],
+  emailVerified,
 }: GetUsersParams = {}): Promise<GetUsersResponse> {
   try {
     const skip = (page - 1) * perPage;
 
     // Construir filtros de busca
-    const where = search
-      ? {
-          OR: [
-            {
-              nome: {
-                contains: search,
-                mode: "insensitive" as const,
-              },
-            },
-            {
-              email: {
-                contains: search,
-                mode: "insensitive" as const,
-              },
-            },
-          ],
-        }
-      : {};
+    const where: any = {};
+
+    // Filtro de busca por texto
+    if (search) {
+      where.OR = [
+        {
+          nome: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          email: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          cpf: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+      ];
+    }
+
+    // Filtro por role
+    if (role.length > 0) {
+      where.role = {
+        in: role,
+      };
+    }
+
+    // Filtro por status
+    if (status.length > 0) {
+      where.status = {
+        in: status,
+      };
+    }
+
+    // Filtro por email verificado
+    if (emailVerified !== undefined) {
+      where.emailVerified = emailVerified;
+    }
 
     // Construir ordenação
     const orderBy = {
@@ -73,8 +108,11 @@ export async function getUsers({
           id: true,
           nome: true,
           email: true,
-          emailVerified: true,
+          cpf: true,
+          matricula: true,
           role: true,
+          status: true,
+          emailVerified: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -88,6 +126,7 @@ export async function getUsers({
       users: users.map((user) => ({
         ...user,
         role: user.role as UserRole,
+        status: user.status as string,
       })),
       total,
       page,

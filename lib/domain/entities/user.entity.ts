@@ -8,9 +8,12 @@ export interface User {
   id: string;
   nome: string;
   email: string;
+  cpf: string;
+  matricula: number;
   emailVerified: boolean;
   image?: string;
   role: UserRole;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
 }
