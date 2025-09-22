@@ -1,9 +1,10 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CPFInput } from "@/components/ui/cpf-input";
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -30,18 +31,19 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      cpf: "",
       password: "",
     },
   });
 
   const onSubmit = async (values: LoginFormData) => {
     try {
-      const result = await login(values.email, values.password);
+      const result = await login(values.cpf, values.password);
 
       if (result.success) {
         onSuccess?.();
@@ -68,17 +70,22 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              {...register("email")}
-              type="email"
-              placeholder="seu@email.com"
-              className={errors.email ? "border-red-500" : ""}
+            <Label htmlFor="cpf">CPF</Label>
+            <Controller
+              name="cpf"
+              control={control}
+              render={({ field }) => (
+                <CPFInput
+                  id="cpf"
+                  placeholder="000.000.000-00"
+                  className={errors.cpf ? "border-red-500" : ""}
+                  {...field}
+                />
+              )}
             />
-            {errors.email && (
+            {errors.cpf && (
               <Alert variant="destructive">
-                <AlertDescription>{errors.email.message}</AlertDescription>
+                <AlertDescription>{errors.cpf.message}</AlertDescription>
               </Alert>
             )}
           </div>
@@ -91,9 +98,7 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
                 placeholder="Sua senha"
-                className={
-                  errors.password ? "border-red-500 pr-10" : "pr-10"
-                }
+                className={errors.password ? "border-red-500 pr-10" : "pr-10"}
               />
               <Button
                 type="button"
@@ -116,9 +121,9 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
             )}
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full" 
+          <Button
+            type="submit"
+            className="w-full"
             disabled={isLoading || isSubmitting}
           >
             {isLoading || isSubmitting ? (

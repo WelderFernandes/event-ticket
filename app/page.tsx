@@ -31,6 +31,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
+      console.log("isAuthenticated", isAuthenticated);
+      // #TODO: Remover este console.log
       router.push("/dashboard");
     }
   }, [isAuthenticated, isLoading, router]);

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import {
   AudioWaveform,
   BookOpen,
@@ -29,6 +30,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import Image from "next/image";
 
 export interface NavUser {
   name: string;
@@ -73,35 +75,16 @@ const menuItems: MenuItems = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Eventos",
       url: "/dashboard/events",
       icon: Calendar1,
-      isActive: true,
     },
     {
       title: "Tickets",
       url: "/dashboard/tickets",
       icon: Ticket,
-      isActive: true,
     },
     {
       title: "Sorteios",
@@ -113,43 +96,45 @@ const menuItems: MenuItems = {
       url: "/dashboard/users",
       icon: BookOpen,
     },
-    // {
-    //   title: "Relatórios",
-    //   url: "#",
-    //   icon: Settings2,
-    //   items: [
-    //     {
-    //       title: "Relatório de Eventos",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Relatório de Participantes",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Relatório de Tickets",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Relatório de Validação",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
+  // Função para calcular se um item está ativo baseado na URL atual
+  const isItemActive = (itemUrl?: string): boolean => {
+    if (!itemUrl) return false;
+    return pathname === itemUrl;
+  };
+
+  // Adiciona a propriedade isActive dinamicamente aos itens do menu
+  const navMainWithActiveState =
+    menuItems.navMain?.map((item) => ({
+      ...item,
+      isActive: isItemActive(item.url),
+    })) || [];
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={menuItems.teams || []} />
+        {/* <TeamSwitcher teams={menuItems.teams || []} /> */}
+        <div className="fle-1 flex justify-center align-middle">
+          <div className="relative h-12 w-40">
+            <Image
+              src={"/img/logo_site.png"}
+              fill
+              alt="Logo - Prefeitura Municipal de Cariacica"
+              className="object-contain"
+            />
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={menuItems.navMain || []} />
-        {menuItems.projects && (
+        <NavMain items={navMainWithActiveState} />
+        {/* {menuItems.projects && (
           <NavProjects projects={menuItems.projects || []} />
-        )}
+        )} */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={menuItems.user || { name: "", email: "", avatar: "" }} />

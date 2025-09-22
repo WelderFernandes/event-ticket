@@ -1,9 +1,42 @@
 import { z } from "zod";
 
+// Função para validar CPF
+const validateCPF = (cpf: string): boolean => {
+  // Remove caracteres não numéricos
+  const cleanCPF = cpf.replace(/\D/g, "");
+
+  // Verifica se tem 11 dígitos
+  if (cleanCPF.length !== 11) return false;
+
+  // Verifica se todos os dígitos são iguais
+  if (/^(\d)\1{10}$/.test(cleanCPF)) return false;
+
+  // Validação do primeiro dígito verificador
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cleanCPF.charAt(i)) * (10 - i);
+  }
+  let remainder = sum % 11;
+  let firstDigit = remainder < 2 ? 0 : 11 - remainder;
+
+  if (parseInt(cleanCPF.charAt(9)) !== firstDigit) return false;
+
+  // Validação do segundo dígito verificador
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cleanCPF.charAt(i)) * (11 - i);
+  }
+  remainder = sum % 11;
+  let secondDigit = remainder < 2 ? 0 : 11 - remainder;
+
+  return parseInt(cleanCPF.charAt(10)) === secondDigit;
+};
+
 export const loginSchema = z.object({
-  email: z
-    .email("Email deve ter um formato válido")
-    .min(1, "Email é obrigatório"),
+  cpf: z
+    .string()
+    .min(1, "CPF é obrigatório")
+    .refine(validateCPF, "CPF inválido"),
   password: z
     .string()
     .min(6, "Senha deve ter pelo menos 6 caracteres")

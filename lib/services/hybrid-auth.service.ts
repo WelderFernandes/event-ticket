@@ -1,5 +1,6 @@
-import { externalAuthService, ExternalUserInfo } from "./external-auth.service";
+import { externalAuthService } from "./external-auth.service";
 import { User, UserRole } from "../domain/entities/user.entity";
+import { translateAuthError } from "../utils/auth-error-handler";
 
 interface HybridAuthResult {
   success: boolean;
@@ -12,19 +13,36 @@ interface HybridAuthResult {
 
 export class HybridAuthService {
   async authenticateWithExternal(
-    email: string,
+    cpf: string,
     password: string
   ): Promise<HybridAuthResult> {
     try {
       // 1. Autenticar com a API externa
       const authResponse = await externalAuthService.authenticate(
-        email,
+        cpf,
         password
       );
 
       // 2. Obter informações do usuário
+      // Tenta extrair o userName do token para usar no endpoint correto
+      let userName: string | undefined;
+      try {
+        const tokenParts = authResponse.access_token.split(".");
+        if (tokenParts.length === 3) {
+          const payload = JSON.parse(atob(tokenParts[1]));
+          userName = payload.user_name || payload.username || payload.sub;
+        }
+      } catch (error) {
+        console.log("Não foi possível extrair userName do token:", error);
+      }
+
       const userInfo = await externalAuthService.getUserInfo(
-        authResponse.access_token
+        authResponse.access_token,
+        userName
+      );
+      console.log(
+        "🚀 ~ hybrid-auth.service.ts:43 ~ authenticateWithExternal ~ userInfo:",
+        userInfo
       );
 
       // 3. Mapear para o formato interno
@@ -48,12 +66,15 @@ export class HybridAuthService {
       };
     } catch (error) {
       console.error("Erro na autenticação híbrida:", error);
+
+      // Usa o tradutor de erros para mensagens mais amigáveis
+      const friendlyError = translateAuthError(
+        (error as any)?.originalError || error
+      );
+
       return {
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Erro desconhecido na autenticação",
+        error: friendlyError,
       };
     }
   }

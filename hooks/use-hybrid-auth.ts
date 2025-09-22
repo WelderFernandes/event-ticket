@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import { hybridAuthService } from "@/lib/services/hybrid-auth.service";
 import { User, UserRole } from "@/lib/domain/entities/user.entity";
+import {
+  syncAuthDataBetweenStorage,
+  saveAuthDataToBothStorages,
+  clearAuthDataFromBothStorages,
+  hasValidSessionInCookies,
+} from "@/lib/utils/auth-cookies";
 
 interface HybridAuthState {
   user: User | null;
@@ -23,36 +29,35 @@ export function useHybridAuth() {
     refreshToken: null,
   });
 
-  // Verificar se há sessão salva no localStorage
+  // Verificar se há sessão salva nos cookies/localStorage
   useEffect(() => {
     const checkStoredSession = () => {
       try {
-        const storedUser = localStorage.getItem("hybrid_auth_user");
-        const storedAccessToken = localStorage.getItem(
-          "hybrid_auth_access_token"
-        );
-        const storedRefreshToken = localStorage.getItem(
-          "hybrid_auth_refresh_token"
-        );
-        const storedExpiresAt = localStorage.getItem("hybrid_auth_expires_at");
+        // Sincroniza dados entre cookies e localStorage
+        const {
+          accessToken,
+          refreshToken: storedRefreshToken,
+          expiresAt,
+          user,
+        } = syncAuthDataBetweenStorage();
 
-        if (storedUser && storedAccessToken && storedExpiresAt) {
-          const expiresAt = new Date(storedExpiresAt);
+        if (user && accessToken && expiresAt) {
+          const expiresDate = new Date(expiresAt);
           const now = new Date();
 
-          if (expiresAt > now) {
+          if (expiresDate > now) {
             // Token ainda válido
             setAuthState({
-              user: JSON.parse(storedUser),
+              user: user,
               isAuthenticated: true,
               isLoading: false,
               error: null,
-              accessToken: storedAccessToken,
-              refreshToken: storedRefreshToken,
+              accessToken: accessToken,
+              refreshToken: storedRefreshToken || null,
             });
           } else if (storedRefreshToken) {
             // Token expirado, tentar renovar
-            refreshToken(storedRefreshToken);
+            refreshTokenFunction(storedRefreshToken);
           } else {
             // Sem refresh token, limpar sessão
             clearSession();
@@ -70,14 +75,14 @@ export function useHybridAuth() {
   }, []);
 
   const login = async (
-    email: string,
+    cpf: string,
     password: string
   ): Promise<{ success: boolean; error?: string }> => {
     setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const result = await hybridAuthService.authenticateWithExternal(
-        email,
+        cpf,
         password
       );
 
@@ -86,16 +91,13 @@ export function useHybridAuth() {
           Date.now() + (result.expiresIn || 3600) * 1000
         );
 
-        // Salvar no localStorage
-        localStorage.setItem("hybrid_auth_user", JSON.stringify(result.user));
-        localStorage.setItem("hybrid_auth_access_token", result.accessToken);
-        if (result.refreshToken) {
-          localStorage.setItem(
-            "hybrid_auth_refresh_token",
-            result.refreshToken
-          );
-        }
-        localStorage.setItem("hybrid_auth_expires_at", expiresAt.toISOString());
+        // Salvar em ambos os lugares (cookies e localStorage)
+        saveAuthDataToBothStorages({
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          expiresAt: expiresAt.toISOString(),
+          user: result.user,
+        });
 
         setAuthState({
           user: result.user,
@@ -134,7 +136,7 @@ export function useHybridAuth() {
     clearSession();
   };
 
-  const refreshToken = async (refreshToken: string) => {
+  const refreshTokenFunction = async (refreshToken: string) => {
     try {
       const result = await hybridAuthService.refreshExternalToken(refreshToken);
 
@@ -143,15 +145,12 @@ export function useHybridAuth() {
           Date.now() + (result.expiresIn || 3600) * 1000
         );
 
-        // Atualizar tokens no localStorage
-        localStorage.setItem("hybrid_auth_access_token", result.accessToken);
-        if (result.refreshToken) {
-          localStorage.setItem(
-            "hybrid_auth_refresh_token",
-            result.refreshToken
-          );
-        }
-        localStorage.setItem("hybrid_auth_expires_at", expiresAt.toISOString());
+        // Atualizar tokens em ambos os lugares
+        saveAuthDataToBothStorages({
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          expiresAt: expiresAt.toISOString(),
+        });
 
         setAuthState((prev) => ({
           ...prev,
@@ -170,10 +169,8 @@ export function useHybridAuth() {
   };
 
   const clearSession = () => {
-    localStorage.removeItem("hybrid_auth_user");
-    localStorage.removeItem("hybrid_auth_access_token");
-    localStorage.removeItem("hybrid_auth_refresh_token");
-    localStorage.removeItem("hybrid_auth_expires_at");
+    // Limpar de ambos os lugares (cookies e localStorage)
+    clearAuthDataFromBothStorages();
 
     setAuthState({
       user: null,

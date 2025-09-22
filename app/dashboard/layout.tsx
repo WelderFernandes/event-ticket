@@ -1,8 +1,4 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Header } from "@/components/common/header";
 import { ProtectedRoute } from "@/components/auth/protected-route";
@@ -18,7 +14,7 @@ export default function RootLayout({
         <AppSidebar />
         <SidebarInset>
           <Header />
-          {children}
+          <div className="p-6 mx-auto">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </ProtectedRoute>
