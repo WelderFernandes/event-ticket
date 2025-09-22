@@ -26,9 +26,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { NavUser as NavUserType } from "./app-sidebar";
+import { useHybridAuth } from "@/hooks/use-hybrid-auth";
 
 export function NavUser({ user }: { user: NavUserType }) {
   const { isMobile } = useSidebar();
+  const { logout } = useHybridAuth();
 
   return (
     <SidebarMenu>
@@ -91,7 +93,7 @@ export function NavUser({ user }: { user: NavUserType }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

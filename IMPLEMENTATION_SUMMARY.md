@@ -139,17 +139,17 @@ docs/
 
 - Preencha o formulário de registro
 - O sistema validará os dados em tempo real
-- Após o registro, você será redirecionado para o dashboard
+- Após o registro, você será redirecionado para o painel
 
 ### 3. Fazer Login
 
 - Use suas credenciais para fazer login
 - O sistema lembrará sua sessão
-- Você será redirecionado para o dashboard
+- Você será redirecionado para o painel
 
 ### 4. Navegar no Dashboard
 
-- O dashboard mostra conteúdo baseado na sua role
+- O painel mostra conteúdo baseado na sua role
 - Admins veem todas as opções
 - Sorteadores veem opções de gerenciamento
 - Usuários veem apenas suas informações

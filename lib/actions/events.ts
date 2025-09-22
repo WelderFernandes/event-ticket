@@ -28,7 +28,7 @@ export async function createEvent(formData: FormData) {
       },
     });
 
-    revalidatePath("/dashboard");
+    revalidatePath("/painel");
     return {
       success: true,
       data: serializeEvent(event),

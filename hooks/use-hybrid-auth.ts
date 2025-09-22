@@ -9,6 +9,7 @@ import {
   clearAuthDataFromBothStorages,
   hasValidSessionInCookies,
 } from "@/lib/utils/auth-cookies";
+import { useRouter } from "next/navigation";
 
 interface HybridAuthState {
   user: User | null;
@@ -28,6 +29,8 @@ export function useHybridAuth() {
     accessToken: null,
     refreshToken: null,
   });
+
+  const router = useRouter();
 
   // Verificar se há sessão salva nos cookies/localStorage
   useEffect(() => {
@@ -180,6 +183,7 @@ export function useHybridAuth() {
       accessToken: null,
       refreshToken: null,
     });
+    router.refresh();
   };
 
   const hasRole = (role: UserRole): boolean => {

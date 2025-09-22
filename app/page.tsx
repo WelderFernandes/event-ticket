@@ -33,20 +33,22 @@ export default function Home() {
     if (!isLoading && isAuthenticated) {
       console.log("isAuthenticated", isAuthenticated);
       // #TODO: Remover este console.log
-      router.push("/dashboard");
+      router.push("/painel");
+    } else {
+      router.push("/auth/login");
     }
   }, [isAuthenticated, isLoading, router]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="text-center space-y-4">
+  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+  //         <p className="text-gray-600">Carregando...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (isAuthenticated) {
     return null; // Será redirecionado pelo useEffect

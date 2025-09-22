@@ -42,7 +42,7 @@ export async function createParticipant(formData: FormData) {
       },
     });
 
-    revalidatePath("/dashboard");
+    revalidatePath("/painel");
     return { success: true, data: participant };
   } catch (error) {
     console.error("Erro ao criar participante:", error);

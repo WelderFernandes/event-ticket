@@ -229,7 +229,7 @@ export function EventList({ events }: EventListProps) {
                       size="sm"
                       className="flex items-center gap-2"
                     >
-                      <Link href={`/dashboard/tickets?eventId=${event.id}`}>
+                      <Link href={`/painel/tickets?eventId=${event.id}`}>
                         <Ticket className="h-4 w-4" />
                         Gerar Tickets
                       </Link>

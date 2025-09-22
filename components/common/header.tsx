@@ -24,7 +24,7 @@ export function Header() {
     //     <Breadcrumb>
     //       <BreadcrumbList>
     //         <BreadcrumbItem className="hidden md:block">
-    //           <BreadcrumbLink href="/dashboard">Event Ticket</BreadcrumbLink>
+    //           <BreadcrumbLink href="/painel">Event Ticket</BreadcrumbLink>
     //         </BreadcrumbItem>
     //         <BreadcrumbSeparator className="hidden md:block" />
     //         <BreadcrumbItem>

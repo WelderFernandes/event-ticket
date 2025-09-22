@@ -2,27 +2,10 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Calendar1,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  LucideIcon,
-  Map,
-  PieChart,
-  RssIcon,
-  Settings2,
-  SquareTerminal,
-  Ticket,
-} from "lucide-react";
+import { BookOpen, Bot, Calendar1, LucideIcon, Ticket } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -31,6 +14,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { useHybridAuth } from "@/hooks/use-hybrid-auth";
 
 export interface NavUser {
   name: string;
@@ -68,39 +52,40 @@ export interface MenuItems {
   projects?: NavProjects[];
 }
 
-// This is sample data.
-const menuItems: MenuItems = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Eventos",
-      url: "/dashboard/events",
-      icon: Calendar1,
-    },
-    {
-      title: "Tickets",
-      url: "/dashboard/tickets",
-      icon: Ticket,
-    },
-    {
-      title: "Sorteios",
-      icon: Bot,
-      url: "/dashboard/raffle",
-    },
-    {
-      title: "Usuários",
-      url: "/dashboard/users",
-      icon: BookOpen,
-    },
-  ],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { user } = useHybridAuth();
+
+  // This is sample data.
+  const menuItems: MenuItems = {
+    user: {
+      name: user?.name || "",
+      email: user?.email || "",
+      avatar: user?.image || "",
+    },
+    navMain: [
+      {
+        title: "Eventos",
+        url: "/painel/events",
+        icon: Calendar1,
+      },
+      {
+        title: "Tickets",
+        url: "/painel/tickets",
+        icon: Ticket,
+      },
+      {
+        title: "Sorteios",
+        icon: Bot,
+        url: "/painel/raffle",
+      },
+      {
+        title: "Usuários",
+        url: "/painel/users",
+        icon: BookOpen,
+      },
+    ],
+  };
 
   // Função para calcular se um item está ativo baseado na URL atual
   const isItemActive = (itemUrl?: string): boolean => {

@@ -10,7 +10,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleSuccess = () => {
-    router.push("/dashboard");
+    router.push("/painel");
   };
 
   const handleError = (errorMessage: string) => {

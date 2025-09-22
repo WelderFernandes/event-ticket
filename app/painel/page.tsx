@@ -17,7 +17,7 @@ import { Calendar, Ticket, Users, Settings, BarChart3 } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardPage() {
-  const { user, isAdmin, isSorteador, isUser } = useHybridAuth();
+  const { user } = useHybridAuth();
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
@@ -52,7 +52,7 @@ export default function DashboardPage() {
               <div className="text-2xl font-bold">-</div>
               <p className="text-xs text-muted-foreground">Eventos ativos</p>
               <Button asChild size="sm" className="mt-2">
-                <Link href="/dashboard/events">Ver Eventos</Link>
+                <Link href="/painel/events">Ver Eventos</Link>
               </Button>
             </CardContent>
           </Card>
@@ -72,7 +72,7 @@ export default function DashboardPage() {
                 Tickets gerados hoje
               </p>
               <Button asChild size="sm" className="mt-2">
-                <Link href="/dashboard/tickets">Gerar Tickets</Link>
+                <Link href="/painel/tickets">Gerar Tickets</Link>
               </Button>
             </CardContent>
           </Card>
@@ -92,7 +92,7 @@ export default function DashboardPage() {
                 Total de participantes
               </p>
               <Button asChild size="sm" className="mt-2">
-                <Link href="/dashboard/participants">Ver Participantes</Link>
+                <Link href="/painel/participants">Ver Participantes</Link>
               </Button>
             </CardContent>
           </Card>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                 Configurações do sistema
               </p>
               <Button asChild size="sm" className="mt-2">
-                <Link href="/dashboard/admin">Configurações</Link>
+                <Link href="/painel/admin">Configurações</Link>
               </Button>
             </CardContent>
           </Card>

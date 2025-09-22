@@ -116,7 +116,7 @@ export async function generateTicket(
       return { participant, ticket, qrCodeImage };
     });
 
-    revalidatePath("/dashboard");
+    revalidatePath("/painel");
     revalidatePath(`/event/${validatedData.eventId}`);
 
     return {

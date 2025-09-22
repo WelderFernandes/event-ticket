@@ -97,13 +97,13 @@ pnpm dev
 
 ### 1. Criar um Evento
 
-- Acesse `/dashboard/events`
+- Acesse `/painel/events`
 - Preencha as informações do evento
 - Defina o limite de participantes (opcional)
 
 ### 2. Gerar Tickets
 
-- Acesse `/dashboard/tickets`
+- Acesse `/painel/tickets`
 - Selecione o evento
 - Preencha os dados do participante
 - O sistema gerará automaticamente:
@@ -122,7 +122,7 @@ pnpm dev
 ```
 event-ticket/
 ├── app/                    # App Router do Next.js
-│   ├── dashboard/         # Páginas do dashboard
+│   ├── painel/         # Páginas do painel
 │   ├── validation/        # Página de validação
 │   └── layout.tsx         # Layout principal
 ├── components/            # Componentes React

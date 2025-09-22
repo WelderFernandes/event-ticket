@@ -10,12 +10,23 @@ import { createEvent, getEvents } from "@/lib/actions/events";
 import { Calendar, Plus, Users, Ticket } from "lucide-react";
 import { EventForm } from "@/components/event-form";
 import { EventList } from "@/components/event-list";
+import {
+  BreadcrumbItemProps,
+  CustomBreadcumb,
+} from "@/components/common/CustomBreadcumb";
 
 export default async function EventsPage() {
   const events = await getEvents();
+  const breadcrumbItemsData: BreadcrumbItemProps[] = [
+    {
+      label: "Dashboard",
+      href: "./panel",
+    },
+  ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      <CustomBreadcumb title="Dashboard" items={breadcrumbItemsData} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
@@ -24,9 +35,6 @@ export default async function EventsPage() {
           <p className="text-muted-foreground">
             Crie e gerencie seus eventos para geração de tickets
           </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Calendar className="h-8 w-8 text-primary" />
         </div>
       </div>
       {/* Estatísticas Rápidas */}
