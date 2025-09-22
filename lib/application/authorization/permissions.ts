@@ -40,5 +40,7 @@ export function hasPermission(
   resource: keyof typeof PERMISSIONS,
   action: keyof (typeof PERMISSIONS)[typeof resource]
 ): boolean {
-  return PERMISSIONS[resource][action].includes(userRole);
+  return (PERMISSIONS[resource][action] as readonly UserRole[]).includes(
+    userRole
+  );
 }
