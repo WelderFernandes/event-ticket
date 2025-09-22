@@ -14,15 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, User, Settings } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export function UserProfile() {
   const { user, isAuthenticated, logout } = useHybridAuth();
-  const router = useRouter();
 
   const handleLogout = () => {
     logout();
-    router.push("/auth/login");
   };
 
   if (!isAuthenticated || !user) {

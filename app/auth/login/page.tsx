@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
+  console.log("🚀 ~ page.tsx:10 ~ LoginPage ~ error:", error);
   const router = useRouter();
 
   const handleSuccess = () => {
@@ -18,15 +19,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Event Ticket</h1>
-        <p className="text-gray-600">Sistema de gerenciamento de eventos</p>
+        <h1 className="text-3xl font-bold text-pmc-gray mb-2">
+          Cariacica Eventos
+        </h1>
+        <p className="text-pmc-gray">Sistema de gerenciamento de eventos</p>
       </div>
 
       {error && (
         <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>
+            {error.split(":")[1].trim().toString()}
+          </AlertDescription>
         </Alert>
       )}
 

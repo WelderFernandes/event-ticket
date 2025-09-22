@@ -42,20 +42,13 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
   });
 
   const onSubmit = async (values: LoginFormData) => {
-    try {
-      const result = await login(values.cpf, values.password);
+    const result = await login(values.cpf, values.password);
+    console.log("🚀 ~ login-form.tsx:46 ~ onSubmit ~ result:", result);
 
-      if (result.success) {
-        onSuccess?.();
-      } else {
-        onError?.(result.error || "Credenciais inválidas");
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Erro inesperado ao fazer login";
-      onError?.(errorMessage);
+    if (result.success) {
+      onSuccess?.();
+    } else {
+      onError?.(result.error || "Credenciais inválidas");
     }
   };
 
@@ -123,7 +116,7 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full bg-pmc-darkblue text-pmc-gray"
             disabled={isLoading || isSubmitting}
           >
             {isLoading || isSubmitting ? (

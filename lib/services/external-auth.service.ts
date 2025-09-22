@@ -53,7 +53,7 @@ export class ExternalAuthService {
       console.error("Erro na autenticação externa:", error);
 
       // Preserva o erro original para melhor tratamento
-      const authError = new Error("Erro de autenticação");
+      const authError = new Error(error as string);
       (authError as any).originalError = error;
       throw authError;
     }

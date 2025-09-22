@@ -9,7 +9,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute redirectTo="/auth/login">
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>

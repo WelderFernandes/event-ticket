@@ -29,16 +29,16 @@ export function ProtectedRoute({
     }
   }, [isAuthenticated, isLoading, router, redirectTo]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-          <p className="text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="text-center space-y-4">
+  //         <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+  //         <p className="text-gray-600">Carregando...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!isAuthenticated) {
     return fallback || null;

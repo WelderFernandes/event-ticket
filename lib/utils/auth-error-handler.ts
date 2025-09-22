@@ -62,8 +62,10 @@ export function translateAuthError(error: any): string {
     }
   }
 
+  console.error("AQUI", error);
+
   // Erro genérico
-  return "Erro inesperado. Tente novamente ou entre em contato com o suporte.";
+  return error;
 }
 
 /**

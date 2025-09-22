@@ -58,18 +58,7 @@ const createAxiosInstance = (baseURL?: string): AxiosInstance => {
         process.env.NODE_ENV === "development" &&
         error.response?.status !== 404
       ) {
-        console.error("❌ Response Error:", {
-          status: error.response?.status,
-          statusText: error.response?.statusText,
-          data: error.response?.data,
-          message: error.message,
-          config: {
-            method: error.config?.method?.toUpperCase(),
-            url: error.config?.url,
-            baseURL: error.config?.baseURL,
-          },
-          stack: error.stack,
-        });
+        console.error("❌ Response Error:", error);
       } else if (
         error.response?.status === 404 &&
         process.env.NODE_ENV === "development"
@@ -82,6 +71,10 @@ const createAxiosInstance = (baseURL?: string): AxiosInstance => {
       }
 
       // Tratamento específico de erros
+      console.log(
+        "🚀 ~ axios-config.ts:74 ~ createAxiosInstance ~ error:",
+        error
+      );
       if (error.response) {
         // Erro com resposta do servidor
         const status = error.response.status;
@@ -125,6 +118,11 @@ const createAxiosInstance = (baseURL?: string): AxiosInstance => {
               data?.error_description || data?.message || `Erro ${status}`;
         }
 
+        console.log(
+          "🚀 ~ axios-config.ts:122 ~ createAxiosInstance ~ enhancedError:",
+          enhancedError,
+          data
+        );
         throw enhancedError;
       } else if (error.request) {
         // Erro de rede/conexão
@@ -181,21 +179,27 @@ export const authRequest = async <T>(
   data: Record<string, any>,
   headers?: Record<string, string>
 ): Promise<T> => {
-  // Converte o objeto para URLSearchParams para form-urlencoded
-  const formData = new URLSearchParams();
-  Object.entries(data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      formData.append(key, String(value));
-    }
-  });
+  try {
+    // Converte o objeto para URLSearchParams para form-urlencoded
+    const formData = new URLSearchParams();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
 
-  const response = await authAxios.post<T>(url, formData, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      ...headers,
-    },
-  });
-  return response.data;
+    const response = await authAxios.post<T>(url, formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        ...headers,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    // Re-throw o erro para que seja tratado pelo interceptor
+    throw new Error(error as string);
+  }
 };
 
 export default defaultAxios;

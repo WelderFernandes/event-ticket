@@ -137,6 +137,7 @@ export function useHybridAuth() {
 
   const logout = () => {
     clearSession();
+    router.push("/auth/login");
   };
 
   const refreshTokenFunction = async (refreshToken: string) => {
