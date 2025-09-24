@@ -4,7 +4,7 @@ import { translateAuthError } from "../utils/auth-error-handler";
 
 interface HybridAuthResult {
   success: boolean;
-  user?: User;
+  user?: Partial<User>;
   accessToken?: string;
   refreshToken?: string;
   expiresIn?: number;
@@ -46,9 +46,9 @@ export class HybridAuthService {
       );
 
       // 3. Mapear para o formato interno
-      const user: User = {
+      const user: Partial<User> = {
         id: userInfo.id,
-        name: userInfo.name,
+        nome: userInfo.name,
         email: userInfo.email,
         emailVerified: true, // Assumindo que usuários da API externa são verificados
         image: undefined,

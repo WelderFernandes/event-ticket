@@ -24,7 +24,7 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">
-          Bem-vindo, {user?.name}!
+          Bem-vindo, {user?.nome}!
         </h1>
         <p className="text-muted-foreground">
           Gerencie seus eventos e tickets de forma eficiente.

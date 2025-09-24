@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 
 interface HybridAuthState {
-  user: User | null;
+  user: Partial<User> | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -192,7 +192,7 @@ export function useHybridAuth() {
   };
 
   const hasAnyRole = (roles: UserRole[]): boolean => {
-    return authState.user ? roles.includes(authState.user.role) : false;
+    return authState.user?.role ? roles.includes(authState.user.role) : false;
   };
 
   return {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import {
   User as UserIcon,
@@ -55,7 +55,7 @@ export default function UsersPage() {
   }, [search, role, status, emailVerified]);
 
   // Buscar dados quando os filtros mudarem
-  useMemo(() => {
+  useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 

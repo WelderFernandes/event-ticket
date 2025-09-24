@@ -44,7 +44,11 @@ export function ProtectedRoute({
     return fallback || null;
   }
 
-  if (requiredRoles && user && !requiredRoles.includes(user.role)) {
+  if (
+    requiredRoles &&
+    user &&
+    !requiredRoles.includes(user.role || ("USER" as UserRole))
+  ) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">

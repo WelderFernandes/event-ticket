@@ -110,20 +110,28 @@ export function ReusableDataTable<TData>({
 
     // Colunas de dados
     columns.forEach((column) => {
-      cols.push({
+      const colDef: ColumnDef<TData> = {
         id: column.id,
-        accessorKey: column.accessorKey as string,
-        accessorFn: column.accessorFn,
         header: ({ column: col }: { column: Column<TData, unknown> }) => (
           <DataTableColumnHeader column={col} title={column.header} />
         ),
-        cell: column.cell || (({ cell }) => <div>{cell.getValue()}</div>),
-        meta: column.meta,
+        cell:
+          column.cell ||
+          (({ cell }) => <div>{String(cell.getValue() ?? "")}</div>),
+        meta: column.meta as any,
         enableColumnFilter: column.enableColumnFilter,
         enableSorting: column.enableSorting,
         enableHiding: column.enableHiding,
         size: column.size,
-      });
+      };
+
+      if (column.accessorFn) {
+        (colDef as any).accessorFn = column.accessorFn;
+      } else if (column.accessorKey) {
+        (colDef as any).accessorKey = column.accessorKey as string;
+      }
+
+      cols.push(colDef);
     });
 
     // Coluna de ações
@@ -167,7 +175,7 @@ export function ReusableDataTable<TData>({
     columns: tableColumns,
     pageCount,
     initialState: {
-      sorting: initialSorting,
+      sorting: initialSorting as any,
       columnPinning: pinnedColumns,
     },
     getRowId,

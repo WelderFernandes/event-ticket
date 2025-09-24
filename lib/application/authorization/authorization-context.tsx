@@ -8,7 +8,7 @@ import { User } from "../../domain/entities/user.entity";
 const AbilityContext = createContext<AppAbility | null>(null);
 
 interface AuthorizationProviderProps {
-  user: User | null;
+  user: Partial<User> | null;
   children: ReactNode;
 }
 
@@ -16,7 +16,7 @@ export function AuthorizationProvider({
   user,
   children,
 }: AuthorizationProviderProps) {
-  const ability = createAbilityFor(user);
+  const ability = createAbilityFor(user as User);
 
   return (
     <AbilityContext.Provider value={ability}>

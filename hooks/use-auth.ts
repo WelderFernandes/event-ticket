@@ -9,11 +9,14 @@ export function useAuth() {
   const user: User | null = session?.user
     ? {
         id: session.user.id,
-        name: session.user.name,
+        nome: session.user.name,
         email: session.user.email,
+        cpf: (session.user as any).cpf || "",
+        matricula: (session.user as any).matricula || 0,
         emailVerified: session.user.emailVerified || false,
         image: session.user.image || undefined,
         role: ((session.user as any).role as UserRole) || UserRole.USER,
+        status: (session.user as any).status || "ACTIVE",
         createdAt: new Date(session.user.createdAt || new Date()),
         updatedAt: new Date(session.user.updatedAt || new Date()),
       }

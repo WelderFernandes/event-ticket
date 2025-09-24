@@ -59,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // This is sample data.
   const menuItems: MenuItems = {
     user: {
-      name: user?.name || "",
+      name: user?.nome || "",
       email: user?.email || "",
       avatar: user?.image || "",
     },
